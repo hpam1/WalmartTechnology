@@ -10,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.walmart.ts.beans.Level;
 import com.walmart.ts.beans.Seat;
+import com.walmart.ts.beans.SeatHold;
+import com.walmart.ts.beans.SeatHoldRepository;
 import com.walmart.ts.beans.SeatStatus;
 import com.walmart.ts.beans.Venue;
 
@@ -142,5 +144,17 @@ public class SeatDAOUtil {
 		Seat seat = seatList.get(random.nextInt(seatList.size()));
 		seat.setStatus(SeatStatus.HELD);
 		return seat;
+	}
+	
+	/*
+	 * 
+	 */
+	public static SeatHold getSeatHoldListFor(int seatHoldId, String customerEmail) {
+		List<SeatHold> seatHoldList = SeatHoldRepository.getSeatHoldList().stream().filter(sh -> sh.getId() == seatHoldId 
+				&& sh.getCustomerEmail().equals(customerEmail)).collect(Collectors.toList());
+		if(seatHoldList != null && seatHoldList.size() == 1) {
+			return seatHoldList.get(0);
+		} else
+			return null;
 	}
 }
