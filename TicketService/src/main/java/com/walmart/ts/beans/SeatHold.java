@@ -14,15 +14,24 @@ import org.json.simple.JSONObject;
 /**
  * @author Haarthi Padmanabhan
  * 
+ * POJO to represent a SeatHold
+ * A seatHold is comprised of:
+ * 	1. id -> seat hold id for uniquely identify the hold
+ * 	2. customerEmail -> the email id of the customer placing the hold
+ * 	3. holdStartTime -> the time of placing the hold
+ *  4. message -> a string indicating the status of the hold request
+ *  5. a list of seats held with this hold
+ *  6. the total cost of the seats with this hold
+ *  
  */
 public class SeatHold {
-	private long id;
+	private int id;
 	private String customerEmail;
 	private LocalDateTime holdStartTime;
 	private String message;
 	private List<Seat> heldSeatList;
 	private BigDecimal totalEstimatedCost;
-	private static long holdId = 0l;
+	private static int holdId = 0;
 	
 	public SeatHold() {
 		holdId++;
@@ -30,11 +39,12 @@ public class SeatHold {
 		this.heldSeatList = new LinkedList<Seat>();
 	}
 
-	public long getId() {
+	// getters and setters
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -80,7 +90,7 @@ public class SeatHold {
 
 	public JSONObject getHoldAsJSON() {
 		JSONObject obj = new JSONObject();
-		obj.put("Id", id);
+		obj.put("Seat Hold Id", id);
 		obj.put("Customer Email", customerEmail);
 		if(holdStartTime != null)
 			obj.put("Hold start time", holdStartTime);

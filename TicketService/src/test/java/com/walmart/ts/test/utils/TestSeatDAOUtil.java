@@ -17,6 +17,12 @@ import com.walmart.ts.beans.SeatStatus;
 import com.walmart.ts.beans.Venue;
 import com.walmart.ts.utils.SeatDAOUtil;
 
+/**
+ * 
+ * @author Haarthi Padmanabhan
+ *
+ * test cases to test SeatDAOUtil 
+ */
 public class TestSeatDAOUtil {
 	private Venue venue;
 	private LinkedList<Level> levelList;

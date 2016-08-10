@@ -2,7 +2,6 @@ package com.walmart.ts.beans;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -11,6 +10,8 @@ import org.json.simple.JSONObject;
 /**
  * 
  * @author Haarthi Padmanabhan
+ * 
+ * A POJO for representing a SeatReservation
  * 
  */
 public class SeatReservation {
@@ -77,7 +78,7 @@ public class SeatReservation {
 	
 	public JSONObject getHoldAsJSON() {
 		JSONObject obj = new JSONObject();
-		obj.put("Id", id);
+		obj.put("Reservation Id", id);
 		obj.put("Customer Email", customerEmail);
 		if(reservationTime != null)
 			obj.put("Reserved at", reservationTime);

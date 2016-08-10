@@ -5,7 +5,8 @@ import java.util.List;
 /**
  * 
  * @author Haarthi Padmanabhan
- *
+ * 
+ * Datastructure to represent the Venue
  */
 public class Venue {
 	private List<Level> venueLevels;

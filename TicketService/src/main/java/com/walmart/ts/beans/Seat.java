@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import org.json.simple.JSONObject;
 
 /**
- * @author hpam1
+ * @author Haarthi Padmanabhan
+ * 
+ * Seat class represents a seat in the venue
  *
  */
 public class Seat {
@@ -25,6 +27,7 @@ public class Seat {
 		this.status = SeatStatus.AVAILABLE;
 	}
 	
+	// getters and setters
 	public long getId() {
 		return id;
 	}

@@ -6,6 +6,7 @@ package com.walmart.ts.utils;
 /**
  * @author Haarthi Padmanabhan
  *
+ *         A constant class for storing messages
  */
 public class MessageConstants {
 	public static final String REQ_NO_SEATS_INVALID = "Invalid input! The required number of seats to hold must be a positive number";

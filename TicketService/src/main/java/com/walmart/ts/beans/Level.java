@@ -10,6 +10,8 @@ import org.json.simple.JSONObject;
 
 /**
  * @author Haarthi Padmanabhan
+ * 
+ *  A POJO to represent the levels in the venue
  *
  */
 public class Level {
@@ -18,6 +20,7 @@ public class Level {
 	private int noOfRows;
 	private List<Seat> seatList;
 
+	// getters and setters
 	public int getId() {
 		return id;
 	}
@@ -49,14 +52,14 @@ public class Level {
 	public void setSeatList(List<Seat> seatList) {
 		this.seatList = seatList;
 	}
-	
+
 	public JSONObject getLevelAsJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("Id", id);
 		obj.put("Name", name);
 		obj.put("No of Rows", noOfRows);
 		JSONArray list = new JSONArray();
-		for(Seat seat: seatList) {
+		for (Seat seat : seatList) {
 			JSONObject seatObj = seat.getSeatAsJSON();
 			list.add(seatObj);
 		}
@@ -68,6 +71,5 @@ public class Level {
 	public String toString() {
 		return getLevelAsJSON().toString();
 	}
-	
-	
+
 }

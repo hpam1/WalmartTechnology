@@ -11,20 +11,37 @@ import com.walmart.ts.beans.Level;
 import com.walmart.ts.beans.Seat;
 import com.walmart.ts.beans.Venue;
 
+/**
+ * 
+ * @author Haarthi Padmanabhan
+ *
+ * A Utility class that reads in the input file located in resources/input.txt and constructs 
+ * the venue object.
+ * 
+ * The input file is a csv file of the form:
+ * 	Levelid, Name, price, rows in the level, seats per row
+ * 
+ * The venue once constructed is valid for the entire session and any change in the input
+ * will require a restart of the session
+ * 
+ */
 public class VenueConstructor {
 	private static Venue venue;
 	
+	// get the venue object
 	public static Venue getVenue() {
 		if(venue == null)
 			generateVenue();
 		return venue;
 	}
 	
+	// construct the venue object
 	private static void generateVenue() {
 		String fileName = "input.txt";
 		ClassLoader classLoader = VenueConstructor.class.getClassLoader();
 		File file = new File(classLoader.getResource(fileName).getFile());
 		List<Level> levelList = new LinkedList<Level>();
+		
 		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
 			String line = null;
 			while ((line = br.readLine()) != null) {
@@ -54,7 +71,6 @@ public class VenueConstructor {
 			venue = new Venue();
 			venue.setVenueLevels(levelList);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

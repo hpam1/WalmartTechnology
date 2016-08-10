@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ import com.walmart.ts.utils.VenueConstructor;
 /**
  * @author Haarthi Padmanabhan
  * 
+ * testcases to test the ticket service
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VenueConstructor.class,SeatDAOUtil.class, HoldValidator.class, SeatHoldRepository.class})
@@ -128,15 +130,18 @@ public class TestTicketService {
 	@Test
 	public void testHoldService3() throws Exception {
 		Seat seat = Mockito.mock(Seat.class);
+		BigDecimal cost = new BigDecimal("34");
 		Mockito.when(VenueConstructor.getVenue()).thenReturn(venue);
 		Mockito.when(SeatDAOUtil.countAvailSeatsWithinLevels(venue, Optional.ofNullable(null), Optional.ofNullable(null))).thenReturn(50);
 		Mockito.when(SeatDAOUtil.holdARandomSeat(venue, Optional.ofNullable(null), Optional.ofNullable(null))).thenReturn(seat);
+		Mockito.when(seat.getPrice()).thenReturn(cost);
 		
 		TicketServiceImpl ts = new TicketServiceImpl();
 		SeatHold sh = ts.findAndHoldSeats(1, Optional.ofNullable(null), Optional.ofNullable(null), "test@test.com");
 		assertEquals(sh.getMessage(), MessageConstants.SUCCESS_PROCESSING_REQUEST);
 		assertNotNull(sh.getHeldSeatList());
 		assertEquals(sh.getHeldSeatList().size(), 1);
+		assertEquals(sh.getTotalEstimatedCost().doubleValue(), 34.0, 0.1);
 	}
 	
 	@Test
@@ -158,11 +163,13 @@ public class TestTicketService {
 		Mockito.when(VenueConstructor.getVenue()).thenReturn(venue);
 		Mockito.when(SeatDAOUtil.countAvailSeatsWithinLevels(venue, Optional.ofNullable(null), Optional.ofNullable(5))).thenReturn(2);
 		Mockito.when(SeatDAOUtil.holdARandomSeat(venue, Optional.ofNullable(null), Optional.ofNullable(5))).thenReturn(seat);
+		Mockito.when(seat.getPrice()).thenReturn(new BigDecimal("25.99"));
 		
 		TicketServiceImpl ts = new TicketServiceImpl();
 		SeatHold sh = ts.findAndHoldSeats(2, Optional.ofNullable(null), Optional.ofNullable(5), "test@test.com");
 		assertEquals(sh.getMessage(), MessageConstants.SUCCESS_PROCESSING_REQUEST);
 		assertEquals(sh.getHeldSeatList().size(), 2);
+		assertEquals(sh.getTotalEstimatedCost().doubleValue(), 51.98, 0.1);
 	}
 	
 	@Test
@@ -171,11 +178,13 @@ public class TestTicketService {
 		Mockito.when(VenueConstructor.getVenue()).thenReturn(venue);
 		Mockito.when(SeatDAOUtil.countAvailSeatsWithinLevels(venue, Optional.ofNullable(2), Optional.ofNullable(5))).thenReturn(4);
 		Mockito.when(SeatDAOUtil.holdARandomSeat(venue, Optional.ofNullable(2), Optional.ofNullable(5))).thenReturn(seat);
+		Mockito.when(seat.getPrice()).thenReturn(new BigDecimal("25.99"));
 		
 		TicketServiceImpl ts = new TicketServiceImpl();
 		SeatHold sh = ts.findAndHoldSeats(3, Optional.ofNullable(2), Optional.ofNullable(5), "test@test.com");
 		assertEquals(sh.getMessage(), MessageConstants.SUCCESS_PROCESSING_REQUEST);
 		assertEquals(sh.getHeldSeatList().size(), 3);
+		assertEquals(sh.getTotalEstimatedCost().doubleValue(), 77.97, 0.1);
 	}
 	
 	@Test
