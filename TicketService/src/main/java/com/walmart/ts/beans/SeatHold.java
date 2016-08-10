@@ -5,6 +5,7 @@ package com.walmart.ts.beans;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -26,6 +27,7 @@ public class SeatHold {
 	public SeatHold() {
 		holdId++;
 		this.id = holdId;
+		this.heldSeatList = new LinkedList<Seat>();
 	}
 
 	public long getId() {
@@ -92,6 +94,7 @@ public class SeatHold {
 		}
 		if(totalEstimatedCost != null)
 			obj.put("Estimated Cost", totalEstimatedCost);
+		obj.put("Message", message);
 		return obj;
 	}
 

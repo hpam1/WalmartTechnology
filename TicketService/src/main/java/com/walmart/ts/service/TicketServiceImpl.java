@@ -19,15 +19,18 @@ import com.walmart.ts.beans.SeatReservation;
 import com.walmart.ts.beans.SeatReservationRepository;
 import com.walmart.ts.beans.SeatStatus;
 import com.walmart.ts.beans.Venue;
+import com.walmart.ts.utils.MessageConstants;
 import com.walmart.ts.utils.SeatDAOUtil;
+import com.walmart.ts.utils.TicketServiceUtils;
 import com.walmart.ts.utils.VenueConstructor;
 
 /**
  * @author Haarthi Padmanabhan
- * TODO - input validatio
- * 		  thread synchronization
- * 		  messages to constant files
- * 		  estimated cost calculation
+ * 
+ * TicketService API implementation
+ * 
+ * 
+ * TODO - estimated cost calculation
  */
 public class TicketServiceImpl implements TicketService {
 	
@@ -47,6 +50,7 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public int numSeatsAvailable(Optional<Integer> venueLevel) {
 		log.debug("In TicketServiceImpl numAvailableSeats service");
+		HoldValidator.purgeExpiredHolds();
 		if(venueLevel.isPresent()) {
 			return SeatDAOUtil.countAvailSeatInLevel(venue, venueLevel.get());
 		}
@@ -54,62 +58,101 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.walmart.ts.service.TicketService#findAndHoldSeats(int, java.util.Optional, java.util.Optional, java.lang.String)
+	/*
+	 * randomly find specific number of avaibale seats in the venue, optionally limited by level
+	 * and place a hold on them 
+	 * 
+	 * @param numSeats - the number of seats to be held
+	 * @param minLevel - an optional parameter specifying the minimum level to hold a seat
+	 * @param maxLevel - an optional parameter specifying the maximum level to hold a seat
+	 * @param customerEmail - the email id of the customer
+	 * @return seatHold - with information about this seat hold request
 	 */
 	@Override
 	public SeatHold findAndHoldSeats(int numSeats, Optional<Integer> minLevel, Optional<Integer> maxLevel,
 			String customerEmail) {
+		log.debug("In TicketServiceImpl findAndHoldSeats " + numSeats);
+		// clear expired holds
 		HoldValidator.purgeExpiredHolds();
-		int numAvailSeats = SeatDAOUtil.countAvailSeatsWithinLevels(venue, minLevel, maxLevel);
+	
 		SeatHold seatHold = new SeatHold();
 		seatHold.setCustomerEmail(customerEmail);
-		if(numAvailSeats >= numSeats) {
+		
+		//validate input
+		log.debug("findAndHoldSeats:: Validate input");
+		boolean validInput = TicketServiceUtils.validateSeatHoldInput(seatHold, numSeats, minLevel, maxLevel, customerEmail);
+		if(!validInput) {
+			return seatHold;
+		}
+		// get the available seats in the venue
+		log.debug("findAndHoldSeats:: enquiring about the seats available in the venue");
+		int numAvailSeats = SeatDAOUtil.countAvailSeatsWithinLevels(venue, minLevel, maxLevel);
+		if(numAvailSeats >= numSeats) { //sufficient no of seats available
+			log.debug("findAndHoldSeats:: sufficient number of seats available");
 			List<Seat> heldSeatList = new LinkedList<Seat>();
-			while(numSeats >= 0) {
+			while(numSeats > 0) {
+				// get a random available seat within the specified levels
 				Seat seat = SeatDAOUtil.holdARandomSeat(venue, minLevel, maxLevel);
-				if(seat != null) {
+				if(seat != null) { 
+					// add this seat to the hold list
 					heldSeatList.add(seat);
 					numSeats--;
-				} else {
-					//TODO release previously held seats
+				} else { // no seat available; might be assigned to other users
+					log.debug("findAndHoldSeats:: " + MessageConstants.INSUFFICIENT_SEATS);
+					//release previously held seats
+					heldSeatList.forEach(st -> st.setStatus(SeatStatus.AVAILABLE));
 					seatHold.setId(-1);
-					seatHold.setMessage("Sorry We are unable process your request currently. Insufficient seats");
-					return seatHold;
+					seatHold.setMessage(MessageConstants.INSUFFICIENT_SEATS);
 				}
 			}
 			seatHold.setHeldSeatList(heldSeatList);
 			seatHold.setHoldStartTime(LocalDateTime.now());
-			seatHold.setMessage("Success processing your hold request");
-		} else {
+			seatHold.setMessage(MessageConstants.SUCCESS_PROCESSING_REQUEST);
+			log.debug("findAndHoldSeats:: " + MessageConstants.SUCCESS_PROCESSING_REQUEST);
+		} else { // insufficient number of seats available
+			log.debug("findAndHoldSeats:: " + MessageConstants.INSUFFICIENT_SEATS);
 			seatHold.setId(-1);
-			seatHold.setMessage("Sorry We are unable process your request currently. Insufficient seats");
+			seatHold.setMessage(MessageConstants.INSUFFICIENT_SEATS);
 		}
 		return seatHold;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.walmart.ts.service.TicketService#reserveSeats(int, java.lang.String)
+	/* 
+	 * Given a seat hold id, reserve the seats held by the customer
+	 * 
+	 * @param seatHoldId - the seat hold id
+	 * @param customerEmail - the email id of the customer having the hold
+	 * @return seat reservation information
 	 */
 	@Override
 	public String reserveSeats(int seatHoldId, String customerEmail) {
+		log.debug("In TicketServiceImpl reserveSeats " + seatHoldId + " " + customerEmail);
+		//clear expired holds
 		HoldValidator.purgeExpiredHolds();
-		List<SeatHold> seatHoldList = SeatHoldRepository.getSeatHoldList().stream().filter(sh -> sh.getId() == seatHoldId 
-				&& sh.getCustomerEmail().equals(customerEmail)).collect(Collectors.toList());
+		//validate input
 		SeatReservation sr = new SeatReservation();
-		if(seatHoldList != null && seatHoldList.size() == 1) {
-			SeatHold hold = seatHoldList.get(0);
+		sr.setCustomerEmail(customerEmail);
+		boolean validInput = TicketServiceUtils.validateReserveSeatInput(sr, seatHoldId, customerEmail);
+		if(!validInput) {
+			return sr.toString();
+		}
+		
+		// get the seathold matching the input
+		log.debug("reserveSeats:: valid seat hold");
+		SeatHold hold = SeatDAOUtil.getSeatHoldListFor(seatHoldId, customerEmail);
+		if(hold != null) {
 			sr.setEstimatedCost(hold.getTotalEstimatedCost());
 			sr.setReservationTime(LocalDateTime.now());
 			sr.setReservedSeatList(hold.getHeldSeatList());
 			sr.getReservedSeatList().forEach(seat -> seat.setStatus(SeatStatus.RESERVED));
-			sr.setMessage("Success processing reservation request");
+			sr.setMessage(MessageConstants.SUCCESS_PROCESSING_REQUEST);
 			SeatHoldRepository.getSeatHoldList().remove(hold);
 			SeatReservationRepository.getReservedSeatList().add(sr);
-		} else {
+			log.debug("reserveSeats:: " + MessageConstants.SUCCESS_PROCESSING_REQUEST);
+		} else { // invalid seat hold
 			sr.setId(-1);
-			sr.setCustomerEmail(customerEmail);
-			sr.setMessage("Sorry reservation request cannot be processed. Invalid input");
+			sr.setMessage(MessageConstants.INVALID_SEAT_HOLD);
+			log.debug("reserveSeats:: " + MessageConstants.INVALID_SEAT_HOLD);
 		}
 		return sr.toString();
 	}

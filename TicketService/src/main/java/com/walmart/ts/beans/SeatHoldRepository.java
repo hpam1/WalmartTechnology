@@ -10,7 +10,7 @@ import java.util.LinkedList;
  *
  */
 public class SeatHoldRepository {
-	private static LinkedList<SeatHold> seatHoldList = new LinkedList<SeatHold>();
+	private static final LinkedList<SeatHold> seatHoldList = new LinkedList<SeatHold>();
 
 	public static LinkedList<SeatHold> getSeatHoldList() {
 		return seatHoldList;

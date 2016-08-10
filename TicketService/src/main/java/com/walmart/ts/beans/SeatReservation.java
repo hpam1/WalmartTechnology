@@ -2,6 +2,7 @@ package com.walmart.ts.beans;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -90,6 +91,7 @@ public class SeatReservation {
 		}
 		if(estimatedCost != null)
 			obj.put("Estimated Cost", estimatedCost);
+		obj.put("message", message);
 		return obj;
 	}
 
