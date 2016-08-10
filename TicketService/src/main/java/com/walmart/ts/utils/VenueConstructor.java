@@ -13,25 +13,16 @@ import com.walmart.ts.beans.Venue;
 
 public class VenueConstructor {
 	private static Venue venue;
-	private static VenueConstructor instance = new VenueConstructor();
 	
-	private VenueConstructor() {
-		
-	}
-	
-	public static VenueConstructor getInstance() {
-		return instance;
-	}
-	
-	public Venue getVenue() {
+	public static Venue getVenue() {
 		if(venue == null)
 			generateVenue();
 		return venue;
 	}
 	
-	private void generateVenue() {
+	private static void generateVenue() {
 		String fileName = "input.txt";
-		ClassLoader classLoader = getClass().getClassLoader();
+		ClassLoader classLoader = VenueConstructor.class.getClassLoader();
 		File file = new File(classLoader.getResource(fileName).getFile());
 		List<Level> levelList = new LinkedList<Level>();
 		try(BufferedReader br = new BufferedReader(new FileReader(file))) {

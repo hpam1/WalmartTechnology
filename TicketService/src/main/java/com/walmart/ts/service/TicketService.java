@@ -7,6 +7,11 @@ import com.walmart.ts.beans.SeatHold;
 /**
  * 
  * @author Haarthi Padmanabhan
+ * 
+ * TicketService API
+ * 	1. numSeatsAvailable - to enquire the number of seats available
+ *  2. findAndHoldSeats - request to hold certain number of seats
+ *  3. reserveSeats - request to reserve seats previously held by the customer
  *
  */
 public interface TicketService {

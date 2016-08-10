@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.walmart.ts.beans.Seat;
 import com.walmart.ts.beans.SeatHold;
 import com.walmart.ts.beans.SeatHoldRepository;
@@ -29,22 +32,28 @@ import com.walmart.ts.utils.VenueConstructor;
 public class TicketServiceImpl implements TicketService {
 	
 	private Venue venue;
+	static Logger log = LogManager.getLogger(TicketServiceImpl.class);
 	
 	public TicketServiceImpl() {
-		this.venue = VenueConstructor.getInstance().getVenue();
+		this.venue = VenueConstructor.getVenue();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.walmart.ts.service.TicketService#numSeatsAvailable(java.util.Optional)
+	/* 
+	 * Count the number of seats available in the venue, optionally by a specific venue level
+	 * 
+	 * @param venueLevel - an optional parameter that specifies a venue level to look for seats
+	 * @return the count of the available seats
 	 */
 	@Override
 	public int numSeatsAvailable(Optional<Integer> venueLevel) {
+		log.debug("In TicketServiceImpl numAvailableSeats service");
 		if(venueLevel.isPresent()) {
 			return SeatDAOUtil.countAvailSeatInLevel(venue, venueLevel.get());
 		}
 		return SeatDAOUtil.countAvailSeatInVenue(venue);
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see com.walmart.ts.service.TicketService#findAndHoldSeats(int, java.util.Optional, java.util.Optional, java.lang.String)
 	 */
