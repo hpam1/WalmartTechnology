@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 
 /**
  * @author Haarthi Padmanabhan
- *
+ * 
  */
 public class SeatHold {
 	private long id;

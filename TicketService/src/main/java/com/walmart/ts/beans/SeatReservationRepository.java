@@ -10,7 +10,7 @@ import java.util.LinkedList;
  *
  */
 public class SeatReservationRepository {
-	private static LinkedList<SeatReservation> reservedSeatList = new LinkedList<SeatReservation>();
+	private static final LinkedList<SeatReservation> reservedSeatList = new LinkedList<SeatReservation>();
 
 	public static LinkedList<SeatReservation> getReservedSeatList() {
 		return reservedSeatList;

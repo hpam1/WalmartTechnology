@@ -36,7 +36,7 @@ import com.walmart.ts.utils.VenueConstructor;
 
 /**
  * @author Haarthi Padmanabhan
- *
+ * 
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VenueConstructor.class,SeatDAOUtil.class, HoldValidator.class, SeatHoldRepository.class})

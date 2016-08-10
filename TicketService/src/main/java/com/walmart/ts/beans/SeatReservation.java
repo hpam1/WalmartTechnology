@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 /**
  * 
  * @author Haarthi Padmanabhan
- *
+ * 
  */
 public class SeatReservation {
 	private long id;
