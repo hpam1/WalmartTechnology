@@ -12,7 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * @author Haarthi Padmanabhan
+ * @author Haarthi Padmanabhan 
  * 
  * POJO to represent a SeatHold
  * A seatHold is comprised of:
