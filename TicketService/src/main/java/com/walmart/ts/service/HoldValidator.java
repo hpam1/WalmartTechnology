@@ -38,7 +38,7 @@ public class HoldValidator {
 	 */
 	static {
 		ClassLoader classLoader = HoldValidator.class.getClassLoader();
-		
+		 
 		Properties properties = new Properties();
 		try(InputStream inputStream = classLoader.getResourceAsStream("TSProperties.properties")) {
 			properties.load(inputStream);

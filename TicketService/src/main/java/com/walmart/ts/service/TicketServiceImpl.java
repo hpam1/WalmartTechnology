@@ -60,7 +60,7 @@ public class TicketServiceImpl implements TicketService {
 		HoldValidator.purgeExpiredHolds();
 
 		SeatHold seatHold = new SeatHold();
-		seatHold.setCustomerEmail(customerEmail);
+		seatHold.setCustomerEmail(customerEmail); 
 		try {
 			// validate input
 			boolean validInput = TicketServiceUtils.validateSeatHoldInput(seatHold, numSeats, minLevel, maxLevel,

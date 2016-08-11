@@ -37,7 +37,7 @@ public class VenueConstructor {
 	
 	// construct the venue object
 	private static void generateVenue() {
-		String fileName = "input.txt";
+		String fileName = "input.txt"; 
 		ClassLoader classLoader = VenueConstructor.class.getClassLoader();
 		try (InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
 			List<Level> levelList = new LinkedList<Level>();
