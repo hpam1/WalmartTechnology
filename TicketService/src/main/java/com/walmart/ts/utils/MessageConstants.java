@@ -16,4 +16,5 @@ public class MessageConstants {
 	public static final String SUCCESS_PROCESSING_REQUEST = "Your request was processed successfully";
 	public static final String INVALID_HOLD_ID = "Invalid hold id";
 	public static final String INVALID_SEAT_HOLD = "Invalid input! Either invalid hold id or invalid customer email";
+	public static final String ERROR_PROCESSING_REQUEST = "Error processing your request";
 }

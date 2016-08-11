@@ -38,9 +38,9 @@ public class HoldValidator {
 	 */
 	static {
 		ClassLoader classLoader = HoldValidator.class.getClassLoader();
-		InputStream inputStream = classLoader.getResourceAsStream("TSProperties.properties");
+		
 		Properties properties = new Properties();
-		try {
+		try(InputStream inputStream = classLoader.getResourceAsStream("TSProperties.properties")) {
 			properties.load(inputStream);
 			holdThreshold = Long.parseLong((String) properties.get("HoldExpirationThresholdInSeconds"));
 			if(holdThreshold < 0) 
@@ -55,21 +55,25 @@ public class HoldValidator {
 	 * time
 	 */
 	public static void purgeExpiredHolds() {
-		LinkedList<SeatHold> seatHoldList = SeatHoldRepository.getSeatHoldList();
-		// iterate through the hold list
-		while (seatHoldList != null && seatHoldList.size() > 0) {
-			SeatHold sh = seatHoldList.getFirst();
-			LocalDateTime holdTime = sh.getHoldStartTime();
-			LocalDateTime currentTime = LocalDateTime.now();
-			long diffInSeconds = java.time.Duration.between(holdTime, currentTime).getSeconds();
-			if (diffInSeconds >= holdThreshold) { // hold expired
-				if (sh.getHeldSeatList() != null && sh.getHeldSeatList().size() > 0)
-					sh.getHeldSeatList().forEach(seat -> seat.setStatus(SeatStatus.AVAILABLE));
-				seatHoldList.removeFirst();
-			} else { // the current element is within the threshold and so are
+		try {
+			LinkedList<SeatHold> seatHoldList = SeatHoldRepository.getSeatHoldList();
+			// iterate through the hold list
+			while (seatHoldList != null && seatHoldList.size() > 0) {
+				SeatHold sh = seatHoldList.getFirst();
+				LocalDateTime holdTime = sh.getHoldStartTime();
+				LocalDateTime currentTime = LocalDateTime.now();
+				long diffInSeconds = java.time.Duration.between(holdTime, currentTime).getSeconds();
+				if (diffInSeconds >= holdThreshold) { // hold expired
+					if (sh.getHeldSeatList() != null && sh.getHeldSeatList().size() > 0)
+						sh.getHeldSeatList().forEach(seat -> seat.setStatus(SeatStatus.AVAILABLE));
+					seatHoldList.removeFirst();
+				} else { // the current element is within the threshold and so are
 						// the next elements; break the processing
-				break;
+					break;
+				}
 			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
