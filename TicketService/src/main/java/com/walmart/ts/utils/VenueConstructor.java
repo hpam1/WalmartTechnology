@@ -1,8 +1,8 @@
 package com.walmart.ts.utils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,10 +39,10 @@ public class VenueConstructor {
 	private static void generateVenue() {
 		String fileName = "input.txt";
 		ClassLoader classLoader = VenueConstructor.class.getClassLoader();
-		File file = new File(classLoader.getResource(fileName).getFile());
+		InputStream inputStream = classLoader.getResourceAsStream(fileName);
 		List<Level> levelList = new LinkedList<Level>();
 		
-		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+		try(BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				String[] splitInput = line.split(",");

@@ -88,12 +88,8 @@ public class SeatHold {
 		this.totalEstimatedCost = totalEstimatedCost;
 	}
 
-	public JSONObject getHoldAsJSON() {
+	public JSONObject getSeatAsJSON() {
 		JSONObject obj = new JSONObject();
-		obj.put("Seat Hold Id", id);
-		obj.put("Customer Email", customerEmail);
-		if(holdStartTime != null)
-			obj.put("Hold start time", holdStartTime);
 		if(heldSeatList != null && heldSeatList.size() > 0) {
 			JSONArray list = new JSONArray();
 			for(Seat seat: heldSeatList) {
@@ -102,15 +98,24 @@ public class SeatHold {
 			}
 			obj.put("Seats", list);
 		}
-		if(totalEstimatedCost != null)
-			obj.put("Estimated Cost", totalEstimatedCost);
-		obj.put("Message", message);
 		return obj;
 	}
 
 	@Override
 	public String toString() {
-		return getHoldAsJSON().toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("Seat Hold Id: " + id);
+		sb.append("\nCustomer Email: " + customerEmail);
+		sb.append("\nStatus: " + message);
+		if(holdStartTime != null)
+			sb.append("\nHold Start Time: " + holdStartTime);
+		if(totalEstimatedCost != null)
+			sb.append("\nEstimated Cost: $" + totalEstimatedCost);
+		if(heldSeatList != null && heldSeatList.size() > 0) {
+			sb.append("\n" + getSeatAsJSON().toString());
+		}
+		
+		return sb.toString();
 	}
 	
 }

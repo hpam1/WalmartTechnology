@@ -3,9 +3,8 @@
  */
 package com.walmart.ts.service;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -39,11 +38,13 @@ public class HoldValidator {
 	 */
 	static {
 		ClassLoader classLoader = HoldValidator.class.getClassLoader();
-		File file = new File(classLoader.getResource("TSProperties.properties").getFile());
+		InputStream inputStream = classLoader.getResourceAsStream("TSProperties.properties");
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream(file));
+			properties.load(inputStream);
 			holdThreshold = Long.parseLong((String) properties.get("HoldExpirationThresholdInSeconds"));
+			if(holdThreshold < 0) 
+				holdThreshold = 60l;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

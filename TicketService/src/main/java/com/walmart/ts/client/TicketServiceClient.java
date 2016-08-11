@@ -33,6 +33,10 @@ public class TicketServiceClient {
 				switch(command) {
 				case 1:
 					Integer level = null;
+					if(splitCommand.length > 2) {
+						System.out.println("Invalid input format. Type 1 <<level>>");
+						break;
+					}
 					if(splitCommand.length == 2 && splitCommand[1] != null && splitCommand[1].trim().length() > 0)
 						level = Integer.parseInt(splitCommand[1]);
 					int seatsAvail = ts.numSeatsAvailable(Optional.ofNullable(level));
@@ -67,6 +71,7 @@ public class TicketServiceClient {
 			} catch(Exception e) {
 				System.out.println("Invalid input format");
 			}
+			System.out.println();
 			System.out.println(message);
 		}
 	}

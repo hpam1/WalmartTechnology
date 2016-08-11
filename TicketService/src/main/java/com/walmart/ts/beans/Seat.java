@@ -64,8 +64,6 @@ public class Seat {
 		obj.put("Seat Id", id);
 		obj.put("Level id", levelId);
 		obj.put("Row Id", rowId);
-		obj.put("price", price);
-		obj.put("status", status);
 		return obj;
 	}
 

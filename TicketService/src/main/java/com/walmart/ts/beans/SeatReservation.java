@@ -76,12 +76,8 @@ public class SeatReservation {
 		this.reservedSeatList = reservedSeatList;
 	}
 	
-	public JSONObject getHoldAsJSON() {
+	public JSONObject getSeatAsJSON() {
 		JSONObject obj = new JSONObject();
-		obj.put("Reservation Id", id);
-		obj.put("Customer Email", customerEmail);
-		if(reservationTime != null)
-			obj.put("Reserved at", reservationTime);
 		if(reservedSeatList != null && reservedSeatList.size() > 0) {
 			JSONArray list = new JSONArray();
 			for(Seat seat: reservedSeatList) {
@@ -90,14 +86,23 @@ public class SeatReservation {
 			}
 			obj.put("Seats", list);
 		}
-		if(estimatedCost != null)
-			obj.put("Estimated Cost", estimatedCost);
-		obj.put("message", message);
 		return obj;
 	}
 
 	@Override
 	public String toString() {
-		return getHoldAsJSON().toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append("Reservation Id: " + id);
+		sb.append("\nCustomer Email: " + customerEmail);
+		sb.append("\nStatus: " + message);
+		if(reservationTime != null)
+			sb.append("\nReservation Time: " + reservationTime);
+		if(estimatedCost != null)
+			sb.append("\nEstimated Cost: $" + estimatedCost);
+		if(reservedSeatList != null && reservedSeatList.size() > 0) {
+			sb.append("\n" + getSeatAsJSON().toString());
+		}
+		
+		return sb.toString();
 	}
 }
