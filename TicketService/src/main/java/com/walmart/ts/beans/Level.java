@@ -54,7 +54,6 @@ public class Level {
 	}
 
 	public JSONObject getLevelAsJSON() {
-		
 		JSONObject obj = new JSONObject();
 		obj.put("Id", id);
 		obj.put("Name", name);
@@ -65,7 +64,7 @@ public class Level {
 			list.add(seatObj);
 		}
 		obj.put("Seats", list);
-		System.out.println("branch2");
+		System.out.println("hello");
 		return obj;
 	}
 
